@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Check-in</title>
+  <style>
+    body{font-family:Arial;margin:0;background:#f6f6f6}
+    .wrap{max-width:720px;margin:28px auto;padding:16px}
+    .card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+    input{width:100%;font-size:22px;padding:14px;border-radius:12px;border:1px solid #ccc}
+    button{margin-top:10px;width:100%;padding:14px;font-size:18px;border:0;border-radius:12px;background:#1976d2;color:#fff}
+    .status{margin-top:12px;padding:18px;border-radius:12px;font-size:22px;font-weight:bold;text-align:center;display:none;color:#fff}
+    .green{background:#1faa59}.red{background:#e53935}.black{background:#111}
+    .sub{margin-top:10px;color:#666;font-size:13px}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <h2 style="margin:0 0 10px;">Door Check-in</h2>
+    <input id="inp" placeholder="Enter Badge or Phone" inputmode="numeric" autofocus />
+    <button id="btn">Check</button>
+    <div id="st" class="status"></div>
+    <div class="sub" id="sub"></div>
+  </div>
+</div>
+
+<script>
+  // 🔴 PUT YOUR GOOGLE APPS SCRIPT WEB APP URL HERE:
+  const API_URL = "https://script.google.com/macros/s/AKfycbwg3lZaWUVGJGftGMXlrtWo0I2pm-ivZDadq9O8_qrWhX1qbC9rgFdItVhp4lTtcpBf/exec";
+
+  // Optional: operator name (door device)
+  const OPERATOR = "Door-1";
+
+  const inp = document.getElementById("inp");
+  const btn = document.getElementById("btn");
+  const st = document.getElementById("st");
+  const sub = document.getElementById("sub");
+
+  function show(type, msg, name){
+    st.className = "status " + type;
+    st.style.display = "block";
+    st.textContent = msg;
+    sub.textContent = name ? ("Name: " + name) : "";
+  }
+
+  async function check(){
+    const input = String(inp.value||"").trim().replace(/\s+/g,"");
+    if(!input){ show("black","ENTER VALUE"); return; }
+
+    try{
+      const res = await fetch(API_URL, {
+        method:"POST",
+        headers: {"Content-Type":"text/plain;charset=utf-8"},
+        body: JSON.stringify({ input, operator: OPERATOR })
+      });
+      const data = await res.json();
+
+      if(data.status === "GREEN") show("green","WELCOME", data.name);
+      else if(data.status === "RED") show("red","DUPLICATED", data.name);
+      else show("black","NOT IN LIST");
+    }catch(e){
+      show("black","NETWORK / API ERROR");
+    }finally{
+      inp.value = "";
+      inp.focus();
+    }
+  }
+
+  btn.addEventListener("click", check);
+  inp.addEventListener("keydown", e => { if(e.key==="Enter") check(); });
+</script>
+</body>
+</html>
