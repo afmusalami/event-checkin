@@ -1,261 +1,224 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Door Check-in</title>
-  <style>
-    *{ box-sizing:border-box; }
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Door Check-in</title>
 
-    body{
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      margin:0;
-      background:#f6f6f6;
-      padding:16px;
-    }
+<style>
+*{box-sizing:border-box}
 
-    .wrap{
-      max-width:720px;
-      margin:28px auto;
-    }
+body{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  margin:0;
+  background:#f6f6f6;
+  padding:16px;
+}
 
-    .card{
-      background:#fff;
-      border-radius:18px;
-      padding:18px;
-      box-shadow:0 10px 24px rgba(0,0,0,.08);
-    }
+.wrap{max-width:720px;margin:28px auto}
 
-    .top{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:12px;
-    }
+.card{
+  background:#fff;
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 10px 24px rgba(0,0,0,.08);
+}
 
-    h2{
-      margin:0;
-      font-size:22px;
-      font-weight:800;
-      letter-spacing:.2px;
-    }
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  margin-bottom:12px;
+}
 
-    .subhead{
-      margin-top:6px;
-      color:#6b7280;
-      font-size:13px;
-      line-height:1.4;
-    }
+h2{margin:0;font-size:22px;font-weight:800}
 
-    .pill{
-      padding:8px 12px;
-      border-radius:999px;
-      font-size:12px;
-      font-weight:700;
-      background:#eef2ff;
-      color:#1e40af;
-      white-space:nowrap;
-      align-self:flex-start;
-    }
+.subhead{
+  margin-top:6px;
+  color:#6b7280;
+  font-size:13px;
+}
 
-    input{
-      width:100%;
-      font-size:20px;
-      padding:14px 14px;
-      border-radius:14px;
-      border:1px solid #d1d5db;
-      outline:none;
-    }
-    input:focus{
-      border-color:#1976d2;
-      box-shadow:0 0 0 4px rgba(25,118,210,.12);
-    }
+.pill{
+  padding:8px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+  background:#eef2ff;
+  color:#1e40af;
+}
 
-    button{
-      margin-top:12px;
-      width:100%;
-      padding:14px;
-      font-size:18px;
-      border:0;
-      border-radius:14px;
-      background:#1976d2;
-      color:#fff;
-      font-weight:800;
-      cursor:pointer;
-    }
-    button:active{ transform: translateY(1px); }
+input{
+  width:100%;
+  font-size:20px;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid #d1d5db;
+  outline:none;
+}
+input:focus{
+  border-color:#1976d2;
+  box-shadow:0 0 0 4px rgba(25,118,210,.12);
+}
 
-    .status{
-      margin-top:14px;
-      padding:22px 18px;
-      border-radius:16px;
-      font-size:26px;
-      font-weight:900;
-      letter-spacing:.6px;
-      text-align:center;
-      display:none;
-      color:#fff;
-      user-select:none;
-    }
-    .green{ background:#1faa59; }
-    .red{ background:#e53935; }
-    .black{ background:#111; }
+button{
+  margin-top:12px;
+  width:100%;
+  padding:14px;
+  font-size:18px;
+  border:0;
+  border-radius:14px;
+  background:#1976d2;
+  color:#fff;
+  font-weight:800;
+  cursor:pointer;
+}
 
-    .details{
-      margin-top:10px;
-      padding:12px 14px;
-      border:1px solid #eee;
-      border-radius:14px;
-      display:none;
-      color:#111827;
-      background:#fafafa;
-    }
-    .details .label{
-      color:#6b7280;
-      font-size:12px;
-      font-weight:700;
-      margin-bottom:4px;
-      text-transform:uppercase;
-      letter-spacing:.4px;
-    }
-    .details .name{
-      font-size:16px;
-      font-weight:800;
-      margin-bottom:6px;
-    }
-    .details .meta{
-      font-size:13px;
-      color:#374151;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .muted{
-      margin-top:10px;
-      color:#9ca3af;
-      font-size:12px;
-      text-align:center;
-    }
-  </style>
+.status{
+  margin-top:14px;
+  padding:22px;
+  border-radius:16px;
+  font-size:26px;
+  font-weight:900;
+  text-align:center;
+  display:none;
+  color:#fff;
+}
+
+.green{background:#1faa59}
+.red{background:#e53935}
+.black{background:#111}
+
+.details{
+  margin-top:10px;
+  padding:12px;
+  border:1px solid #eee;
+  border-radius:14px;
+  display:none;
+  background:#fafafa;
+}
+
+.details .name{font-weight:800;font-size:16px;margin-bottom:6px}
+.meta{font-size:13px;color:#374151}
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="card">
-      <div class="top">
-        <div>
-          <h2>Door Check-in</h2>
-          <div class="subhead">Enter <b>Badge</b> or <b>Phone</b> number, then press Check (or Enter).</div>
-        </div>
-        <div class="pill" id="doorPill">Operator: Door-1</div>
-      </div>
+<div class="wrap">
+<div class="card">
 
-      <input id="inp" placeholder="Enter Badge or Phone" inputmode="numeric" autocomplete="off" autofocus />
-      <button id="btn">Check</button>
-
-      <div id="st" class="status"></div>
-
-      <div id="details" class="details">
-        <div class="label">Matched Attendee</div>
-        <div class="name" id="personName">—</div>
-        <div class="meta">
-          <div><b>Badge:</b> <span id="personBadge">—</span></div>
-          <div><b>Phone:</b> <span id="personPhone">—</span></div>
-        </div>
-      </div>
-
-      <div class="muted">Tip: Use different links per device: <code>?door=Door-2</code>, <code>?door=Door-3</code> …</div>
-    </div>
+<div class="top">
+  <div>
+    <h2>Door Check-in</h2>
+    <div class="subhead">Enter Badge or Phone number</div>
   </div>
+  <div class="pill" id="doorPill">Operator</div>
+</div>
 
-  <script>
-    // 🔴 PUT YOUR GOOGLE APPS SCRIPT WEB APP URL HERE:
-    const API_URL = "https://script.google.com/macros/s/AKfycbwg3lZaWUVGJGftGMXlrtWo0I2pm-ivZDadq9O8_qrWhX1qbC9rgFdItVhp4lTtcpBf/exec";
+<input id="inp" placeholder="Enter Badge or Phone" autofocus>
+<button id="btn">Check</button>
 
-    // ✅ Operator comes from URL param so each door can have its own link:
-    // Door 1: https://afmusalami.github.io/event-checkin/?door=Door-1
-    // Door 2: https://afmusalami.github.io/event-checkin/?door=Door-2
-    const OPERATOR = new URLSearchParams(window.location.search).get("door") || "Door-1";
+<div id="st" class="status"></div>
 
-    const inp = document.getElementById("inp");
-    const btn = document.getElementById("btn");
-    const st = document.getElementById("st");
+<div id="details" class="details">
+  <div class="name" id="personName"></div>
+  <div class="meta">
+    Badge: <span id="personBadge"></span><br>
+    Phone: <span id="personPhone"></span>
+  </div>
+</div>
 
-    const doorPill = document.getElementById("doorPill");
-    const detailsBox = document.getElementById("details");
-    const personName = document.getElementById("personName");
-    const personBadge = document.getElementById("personBadge");
-    const personPhone = document.getElementById("personPhone");
+</div>
+</div>
 
-    doorPill.textContent = "Operator: " + OPERATOR;
+<script>
 
-    function norm(v){
-      return String(v || "").trim().replace(/\s+/g, "");
-    }
+// ✅ YOUR NEW APPS SCRIPT URL
+const API_URL = "https://script.google.com/macros/s/AKfycbwg3lZaWUVGJGftGMXlrtWo0I2pm-ivZDadq9O8_qrWhX1qbC9rgFdItVhp4lTtcpBf/exec";
 
-    function maskPhone(p){
-      const s = String(p || "").trim();
-      if (!s) return "—";
-      const last4 = s.replace(/\D/g, "").slice(-4);
-      return last4 ? ("****" + last4) : "—";
-    }
+// Door from URL
+const OPERATOR = new URLSearchParams(window.location.search).get("door") || "Door-1";
 
-    function show(type, msg, data){
-      st.className = "status " + type;
-      st.style.display = "block";
-      st.textContent = msg;
+document.getElementById("doorPill").textContent = "Operator: " + OPERATOR;
 
-      // Show details only when we matched someone
-      if (data && (data.name || data.badge || data.phone)){
-        detailsBox.style.display = "block";
-        personName.textContent = data.name || "—";
-        personBadge.textContent = data.badge || "—";
-        personPhone.textContent = maskPhone(data.phone);
-      } else {
-        detailsBox.style.display = "none";
-        personName.textContent = "—";
-        personBadge.textContent = "—";
-        personPhone.textContent = "—";
-      }
-    }
+const inp = document.getElementById("inp");
+const btn = document.getElementById("btn");
+const st = document.getElementById("st");
 
-    async function check(){
-      const input = norm(inp.value);
-      if(!input){
-        show("black","ENTER VALUE");
-        return;
-      }
+const details = document.getElementById("details");
+const personName = document.getElementById("personName");
+const personBadge = document.getElementById("personBadge");
+const personPhone = document.getElementById("personPhone");
 
-      try{
-        const res = await fetch(API_URL, {
-          method:"POST",
-          headers: {"Content-Type":"text/plain;charset=utf-8"},
-          body: JSON.stringify({ input, operator: OPERATOR })
-        });
+function norm(v){
+  return String(v||"").trim().replace(/\s+/g,"");
+}
 
-        const data = await res.json();
+function maskPhone(p){
+  const s = String(p||"").replace(/\D/g,"");
+  return s ? "****" + s.slice(-4) : "";
+}
 
-        if(data.status === "GREEN"){
-          show("green","✅ WELCOME", data);
-        } else if(data.status === "RED"){
-          show("red","❌ DUPLICATED", data);
-        } else {
-          show("black","🚫 NOT IN LIST");
-        }
+function show(type,msg,data){
+  st.className="status "+type;
+  st.style.display="block";
+  st.textContent=msg;
 
-      }catch(e){
-        show("black","NETWORK / API ERROR");
-      }finally{
-        // Auto-clear & refocus for fast door flow
-        setTimeout(() => {
-          inp.value = "";
-          inp.focus();
-        }, 900);
-      }
-    }
+  if(data && data.name){
+    details.style.display="block";
+    personName.textContent=data.name;
+    personBadge.textContent=data.badge||"";
+    personPhone.textContent=maskPhone(data.phone);
+  }else{
+    details.style.display="none";
+  }
+}
 
-    btn.addEventListener("click", check);
-    inp.addEventListener("keydown", e => { if(e.key==="Enter") check(); });
-  </script>
+// JSONP helper
+function jsonp(url){
+  return new Promise((resolve,reject)=>{
+    const cb="cb_"+Math.random().toString(36).slice(2);
+    const script=document.createElement("script");
+
+    window[cb]=(data)=>{
+      delete window[cb];
+      script.remove();
+      resolve(data);
+    };
+
+    script.onerror=()=>{
+      delete window[cb];
+      script.remove();
+      reject();
+    };
+
+    script.src=url+(url.includes("?")?"&":"?")+"callback="+cb;
+    document.body.appendChild(script);
+  });
+}
+
+async function check(){
+  const input=norm(inp.value);
+  if(!input){show("black","ENTER VALUE");return;}
+
+  try{
+    const url=`${API_URL}?action=checkin&input=${encodeURIComponent(input)}&operator=${encodeURIComponent(OPERATOR)}`;
+    const data=await jsonp(url);
+
+    if(data.status==="GREEN") show("green","✅ WELCOME",data);
+    else if(data.status==="RED") show("red","❌ DUPLICATED",data);
+    else show("black","🚫 NOT IN LIST");
+
+  }catch(e){
+    show("black","NETWORK / API ERROR");
+  }
+
+  setTimeout(()=>{inp.value="";inp.focus();},900);
+}
+
+btn.onclick=check;
+inp.addEventListener("keydown",e=>{if(e.key==="Enter")check();});
+
+</script>
 </body>
 </html>
