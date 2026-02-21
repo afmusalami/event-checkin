@@ -31,7 +31,7 @@
   const API_URL = "https://script.google.com/macros/s/AKfycbwg3lZaWUVGJGftGMXlrtWo0I2pm-ivZDadq9O8_qrWhX1qbC9rgFdItVhp4lTtcpBf/exec";
 
   // Optional: operator name (door device)
-  const OPERATOR = "Door-1";
+  const OPERATOR = new URLSearchParams(window.location.search).get("door") || "Door-1";
 
   const inp = document.getElementById("inp");
   const btn = document.getElementById("btn");
