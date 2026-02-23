@@ -74,6 +74,11 @@ button{
   cursor:pointer;
 }
 
+button:disabled{
+  opacity:.65;
+  cursor:not-allowed;
+}
+
 .status{
   margin-top:14px;
   padding:22px;
@@ -115,7 +120,16 @@ button{
   <div class="pill" id="doorPill">Operator</div>
 </div>
 
-<input id="inp" placeholder="Enter Badge or Phone" autofocus>
+<!-- ✅ numeric keypad + digits-only -->
+<input
+  id="inp"
+  type="tel"
+  inputmode="numeric"
+  pattern="[0-9]*"
+  placeholder="Enter Badge or Phone"
+  autocomplete="off"
+  autofocus
+>
 <button id="btn">Check</button>
 
 <div id="st" class="status"></div>
@@ -133,12 +147,11 @@ button{
 
 <script>
 
-// ✅ YOUR NEW APPS SCRIPT URL
+// ✅ YOUR APPS SCRIPT URL
 const API_URL = "https://script.google.com/macros/s/AKfycbxkCAne4jYdrin22pexmySd_1hbS5NGqugriSCZ4_O9sFmO872CEEnBxQTZCygxW0lf/exec";
 
 // Door from URL
 const OPERATOR = new URLSearchParams(window.location.search).get("door") || "Door-1";
-
 document.getElementById("doorPill").textContent = "Operator: " + OPERATOR;
 
 const inp = document.getElementById("inp");
@@ -150,8 +163,16 @@ const personName = document.getElementById("personName");
 const personBadge = document.getElementById("personBadge");
 const personPhone = document.getElementById("personPhone");
 
+let busy = false;
+
+// ✅ Force digits-only even if user pastes text
+inp.addEventListener("input", () => {
+  inp.value = inp.value.replace(/\D/g, "");
+});
+
 function norm(v){
-  return String(v||"").trim().replace(/\s+/g,"");
+  // digits only
+  return String(v||"").trim().replace(/\D/g,"");
 }
 
 function maskPhone(p){
@@ -198,8 +219,17 @@ function jsonp(url){
 }
 
 async function check(){
+  if (busy) return; // ✅ prevent double-click
+
   const input=norm(inp.value);
-  if(!input){show("black","ENTER VALUE");return;}
+  if(!input){ show("black","ENTER VALUE"); return; }
+
+  // ✅ lock UI until complete
+  busy = true;
+  btn.disabled = true;
+  inp.disabled = true;
+  const oldBtnText = btn.textContent;
+  btn.textContent = "Checking...";
 
   try{
     const url=`${API_URL}?action=checkin&input=${encodeURIComponent(input)}&operator=${encodeURIComponent(OPERATOR)}`;
@@ -211,9 +241,15 @@ async function check(){
 
   }catch(e){
     show("black","NETWORK / API ERROR");
-  }
+  } finally {
+    // ✅ unlock UI
+    busy = false;
+    btn.disabled = false;
+    inp.disabled = false;
+    btn.textContent = oldBtnText;
 
-  setTimeout(()=>{inp.value="";inp.focus();},900);
+    setTimeout(()=>{inp.value="";inp.focus();},700);
+  }
 }
 
 btn.onclick=check;
