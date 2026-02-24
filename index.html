@@ -41,8 +41,8 @@ body{
 }
 
 .brand img{
-  height:56px;
-  max-width:260px;
+  height:62px;          /* ✅ bigger logo */
+  max-width:280px;
   object-fit:contain;
   display:block;
 }
@@ -51,24 +51,24 @@ body{
   display:flex;
   flex-direction:column;
   align-items:flex-end;
-  gap:8px;
+  gap:6px;
   text-align:right;
 }
 
 .title{
-  font-size:22px;
-  font-weight:900;
-  line-height:1.15;
+  font-size:20px;       /* ✅ cleaner title */
+  font-weight:800;
+  line-height:1.2;
   margin:0;
   color:#111827;
 }
 
 .pill{
-  padding:8px 14px;
+  padding:6px 12px;     /* ✅ softer pill */
   border-radius:999px;
   font-size:12px;
   font-weight:700;
-  background:#eef2ff;
+  background:#f1f5ff;
   color:#1e40af;
   white-space:nowrap;
 }
@@ -89,11 +89,11 @@ input{
   border-radius:14px;
   border:1px solid #d1d5db;
   outline:none;
-  transition:.2s;
+  transition:.15s;
 }
 input:focus{
   border-color:#1976d2;
-  box-shadow:0 0 0 4px rgba(25,118,210,.12);
+  box-shadow:0 0 0 3px rgba(25,118,210,.08); /* ✅ softer glow */
 }
 
 button{
@@ -107,12 +107,10 @@ button{
   color:#fff;
   font-weight:800;
   cursor:pointer;
-  transition:.2s;
+  transition:.15s;
 }
 
-button:hover{
-  background:#1565c0;
-}
+button:hover{ background:#1565c0; }
 
 button:disabled{
   opacity:.6;
@@ -158,10 +156,11 @@ button:disabled{
     text-align:left;
   }
   .brand img{
-    height:50px;
+    height:58px;        /* ✅ mobile logo size */
+    max-width:260px;
   }
   .title{
-    font-size:20px;
+    font-size:19px;
   }
 }
 </style>
@@ -183,7 +182,7 @@ button:disabled{
     </div>
   </div>
 
-  <!-- Badge Only UI -->
+  <!-- Badge-only UI text (phone still works internally) -->
   <div class="subhead">Enter Badge Number</div>
 
   <input
@@ -212,18 +211,15 @@ button:disabled{
 </div>
 
 <script>
-
 // API
 const API_URL = "https://script.google.com/macros/s/AKfycbxkCAne4jYdrin22pexmySd_1hbS5NGqugriSCZ4_O9sFmO872CEEnBxQTZCygxW0lf/exec";
 
-// Operator ?op=1 to ?op=10
+// Operator ?op=1..10
 const params = new URLSearchParams(window.location.search);
 const opNum = parseInt(params.get("op") || "", 10);
 
-const OPERATOR =
-  (opNum >= 1 && opNum <= 10) ? `Operator #${opNum}` :
-  "Operator #1";
-
+// ✅ operator text WITHOUT duplication
+const OPERATOR = (opNum >= 1 && opNum <= 10) ? `Operator #${opNum}` : "Operator #1";
 document.getElementById("doorPill").textContent = OPERATOR;
 
 const inp = document.getElementById("inp");
@@ -323,7 +319,6 @@ async function check(){
 
 btn.onclick=check;
 inp.addEventListener("keydown",e=>{if(e.key==="Enter")check();});
-
 </script>
 </body>
 </html>
