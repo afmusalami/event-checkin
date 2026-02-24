@@ -24,20 +24,14 @@ body{
   box-shadow:0 12px 28px rgba(0,0,0,.08);
 }
 
-/* ✅ Header: logo left only, title+operator right */
+/* HEADER */
 .top{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  gap:16px;
   margin-bottom:16px;
   padding-bottom:14px;
   border-bottom:1px solid #eef2f7;
-}
-
-.brand{
-  display:flex;
-  align-items:center;
 }
 
 .brand img{
@@ -56,7 +50,7 @@ body{
   font-weight:800;
   margin:0;
   color:#111827;
-  line-height:1.2;
+  line-height:1.15;
 }
 
 .pill{
@@ -68,10 +62,9 @@ body{
   font-weight:700;
   background:#f1f5ff;
   color:#1e40af;
-  white-space:nowrap;
 }
 
-/* Badge Label */
+/* Label */
 .subhead{
   margin-bottom:6px;
   color:#6b7280;
@@ -94,6 +87,7 @@ input:focus{
   box-shadow:0 0 0 3px rgba(25,118,210,.08);
 }
 
+/* Button */
 button{
   margin-top:14px;
   width:100%;
@@ -136,7 +130,7 @@ button:disabled{ opacity:.6; cursor:not-allowed; }
 .details .name{font-weight:800;font-size:16px;margin-bottom:6px}
 .meta{font-size:13px;color:#374151}
 
-/* Mobile tweaks */
+/* Mobile */
 @media (max-width:520px){
   .card{ padding:16px; }
   .brand img{ height:54px; max-width:220px; }
@@ -150,18 +144,22 @@ button:disabled{ opacity:.6; cursor:not-allowed; }
 <div class="wrap">
 <div class="card">
 
-  <!-- ✅ Header -->
+  <!-- HEADER -->
   <div class="top">
     <div class="brand">
       <img src="sadara-logo.png" alt="Sadara Logo">
     </div>
+
     <div class="rightHeader">
-      <div class="title">Sadara Iftar Check-in</div>
-      <div class="pill" id="doorPill">Operator</div>
+      <div class="title">
+        Sadara Iftar<br>
+        Check-in
+      </div>
+      <div class="pill" id="doorPill"></div>
     </div>
   </div>
 
-  <!-- Badge-only UI text (phone still works internally) -->
+  <!-- Badge only visible -->
   <div class="subhead">Enter Badge Number</div>
 
   <input
@@ -190,15 +188,18 @@ button:disabled{ opacity:.6; cursor:not-allowed; }
 </div>
 
 <script>
-// ✅ Your Apps Script URL
+
+// API
 const API_URL = "https://script.google.com/macros/s/AKfycbxkCAne4jYdrin22pexmySd_1hbS5NGqugriSCZ4_O9sFmO872CEEnBxQTZCygxW0lf/exec";
 
-// ✅ Operators: use ?op=1 .. ?op=10
+// Operators 1–10
 const params = new URLSearchParams(window.location.search);
 const opNum = parseInt(params.get("op") || "", 10);
 
-// Operator label (no duplication)
-const OPERATOR = (opNum >= 1 && opNum <= 10) ? `Operator #${opNum}` : "Operator #1";
+const OPERATOR = (opNum >= 1 && opNum <= 10)
+  ? `Operator #${opNum}`
+  : "Operator #1";
+
 document.getElementById("doorPill").textContent = OPERATOR;
 
 const inp = document.getElementById("inp");
@@ -212,7 +213,7 @@ const personPhone = document.getElementById("personPhone");
 
 let busy = false;
 
-// digits-only (even paste)
+// Digits only
 inp.addEventListener("input", () => {
   inp.value = inp.value.replace(/\D/g, "");
 });
@@ -241,7 +242,6 @@ function show(type,msg,data){
   }
 }
 
-// JSONP helper
 function jsonp(url){
   return new Promise((resolve,reject)=>{
     const cb="cb_"+Math.random().toString(36).slice(2);
@@ -298,6 +298,7 @@ async function check(){
 
 btn.onclick=check;
 inp.addEventListener("keydown",e=>{if(e.key==="Enter")check();});
+
 </script>
 </body>
 </html>
