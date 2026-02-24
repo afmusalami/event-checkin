@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Door Check-in</title>
+<title>Sadara Iftar Check-in</title>
 
 <style>
 *{box-sizing:border-box}
@@ -24,14 +24,39 @@ body{
   box-shadow:0 10px 24px rgba(0,0,0,.08);
 }
 
+/* Header */
 .top{
   display:flex;
   justify-content:space-between;
-  align-items:flex-start;
-  margin-bottom:12px;
+  align-items:center;
+  gap:12px;
+  margin-bottom:14px;
 }
 
-h2{margin:0;font-size:22px;font-weight:800}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+
+.brand img{
+  height:44px;
+  max-width:150px;
+  object-fit:contain;
+}
+
+.titleBox{
+  text-align:right;
+  min-width:0;
+}
+
+.title{
+  font-size:18px;
+  font-weight:900;
+  line-height:1.1;
+  margin:0;
+}
 
 .subhead{
   margin-top:6px;
@@ -40,12 +65,15 @@ h2{margin:0;font-size:22px;font-weight:800}
 }
 
 .pill{
+  display:inline-block;
   padding:8px 12px;
   border-radius:999px;
   font-size:12px;
   font-weight:700;
   background:#eef2ff;
   color:#1e40af;
+  margin-top:6px;
+  white-space:nowrap;
 }
 
 input{
@@ -105,6 +133,12 @@ button:disabled{
 
 .details .name{font-weight:800;font-size:16px;margin-bottom:6px}
 .meta{font-size:13px;color:#374151}
+
+/* Mobile polish */
+@media (max-width:420px){
+  .brand img{height:40px; max-width:130px;}
+  .title{font-size:17px;}
+}
 </style>
 </head>
 
@@ -112,46 +146,63 @@ button:disabled{
 <div class="wrap">
 <div class="card">
 
-<div class="top">
-  <div>
-    <h2>Door Check-in</h2>
-    <div class="subhead">Enter Badge or Phone number</div>
+  <!-- ✅ New Header -->
+  <div class="top">
+    <div class="brand">
+      <img src="sadara-logo.png" alt="Sadara Logo">
+    </div>
+
+    <div class="titleBox">
+      <div class="title">Sadara Iftar Check-in</div>
+      <div class="pill" id="doorPill">Operator</div>
+    </div>
   </div>
-  <div class="pill" id="doorPill">Operator</div>
-</div>
 
-<!-- ✅ numeric keypad + digits-only -->
-<input
-  id="inp"
-  type="tel"
-  inputmode="numeric"
-  pattern="[0-9]*"
-  placeholder="Enter Badge or Phone"
-  autocomplete="off"
-  autofocus
->
-<button id="btn">Check</button>
+  <!-- ✅ UI shows Badge only (but phone still works if typed) -->
+  <div class="subhead">Enter Badge Number</div>
 
-<div id="st" class="status"></div>
+  <!-- ✅ numeric keypad + digits-only -->
+  <input
+    id="inp"
+    type="tel"
+    inputmode="numeric"
+    pattern="[0-9]*"
+    placeholder="Enter Badge Number"
+    autocomplete="off"
+    autofocus
+  >
+  <button id="btn">Check</button>
 
-<div id="details" class="details">
-  <div class="name" id="personName"></div>
-  <div class="meta">
-    Badge: <span id="personBadge"></span><br>
-    Phone: <span id="personPhone"></span>
+  <div id="st" class="status"></div>
+
+  <div id="details" class="details">
+    <div class="name" id="personName"></div>
+    <div class="meta">
+      Badge: <span id="personBadge"></span><br>
+      Phone: <span id="personPhone"></span>
+    </div>
   </div>
-</div>
 
 </div>
 </div>
 
 <script>
-
 // ✅ YOUR APPS SCRIPT URL
 const API_URL = "https://script.google.com/macros/s/AKfycbxkCAne4jYdrin22pexmySd_1hbS5NGqugriSCZ4_O9sFmO872CEEnBxQTZCygxW0lf/exec";
 
-// Door from URL
-const OPERATOR = new URLSearchParams(window.location.search).get("door") || "Door-1";
+// ✅ 10 operators using ?op=1..10
+// Example links:
+// /?op=1 , /?op=2 , ... /?op=10
+const params = new URLSearchParams(window.location.search);
+const opNum = parseInt(params.get("op") || "", 10);
+
+// Backwards compatibility: if you still use ?door=Door-2 links
+const doorParam = params.get("door");
+
+const OPERATOR =
+  (opNum >= 1 && opNum <= 10) ? `Operator #${opNum}` :
+  (doorParam ? doorParam : "Operator #1");
+
 document.getElementById("doorPill").textContent = "Operator: " + OPERATOR;
 
 const inp = document.getElementById("inp");
@@ -171,8 +222,7 @@ inp.addEventListener("input", () => {
 });
 
 function norm(v){
-  // digits only
-  return String(v||"").trim().replace(/\D/g,"");
+  return String(v||"").trim().replace(/\D/g,""); // digits only
 }
 
 function maskPhone(p){
@@ -219,12 +269,12 @@ function jsonp(url){
 }
 
 async function check(){
-  if (busy) return; // ✅ prevent double-click
+  if (busy) return; // prevent double-click
 
   const input=norm(inp.value);
   if(!input){ show("black","ENTER VALUE"); return; }
 
-  // ✅ lock UI until complete
+  // lock UI
   busy = true;
   btn.disabled = true;
   inp.disabled = true;
@@ -242,7 +292,7 @@ async function check(){
   }catch(e){
     show("black","NETWORK / API ERROR");
   } finally {
-    // ✅ unlock UI
+    // unlock UI
     busy = false;
     btn.disabled = false;
     inp.disabled = false;
@@ -254,7 +304,6 @@ async function check(){
 
 btn.onclick=check;
 inp.addEventListener("keydown",e=>{if(e.key==="Enter")check();});
-
 </script>
 </body>
 </html>
